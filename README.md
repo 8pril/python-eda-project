@@ -11,7 +11,7 @@
 
 ### **데이터 소개**
 
-[문화빅데이터 플랫폼](https://www.bigdata-culture.kr/bigdata/user/data_market/detail.do?id=2bc30b30-4129-11ec-a107-3b8bd6a15b10)
+출처: [문화빅데이터 플랫폼](https://www.bigdata-culture.kr/bigdata/user/data_market/detail.do?id=2bc30b30-4129-11ec-a107-3b8bd6a15b10)
 
 - 온라인(PC모바일) 소비자 서베이 데이터(2015.8월부터 매주 수집)
 - 해외 12개지역에 대한 관심도(요즘 ‘OOO’을 가보고 싶다는 생각이 예전에 비해 … )를 5점 척도로 응답.
