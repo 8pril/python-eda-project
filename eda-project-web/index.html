@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>여행하소서 - 군집별 관심 여행지 추천</title>
+
+    <!-- leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
+
+    <!-- Bulma CSS CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+</head>
+<body>
+    <section class="section is-medium" style="padding-top: 3rem">
+    <div class="container">
+        <header class="has-text-centered py-5">
+            <h2 class="title has-text-weight-bold is-spaced is-size-4-mobile">
+                나와 비슷한 사용자가 관심 가지는 여행지를 추천합니다
+            </h2>
+            <h4 class="subtitle has-text-weight-mediu">
+                성별, 연령대, 거주지, 소득수준을 선택하세요!
+            </h4>
+        </header>
+
+        <form id="predictionForm">
+            <div class="columns is-mobile is-centered" style="max-width:980px;margin:0 auto">
+                <!-- 성별 선택 -->
+                <div class="column is-one-fifth">
+                    <div class="field">
+                        <div class="control">
+                            <div class="select is-fullwidth">
+                                <select id="sex" name="sex">
+                                    <option value="" disabled selected hidden>성별</option>
+                                    <option value="0">여성</option>
+                                    <option value="1">남성</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 연령대 선택 -->
+                <div class="column is-one-fifth">
+                    <div class="field">                   
+                        <div class="control">
+                            <div class="select is-fullwidth">
+                                <select id="age" name="age">
+                                    <option value="" disabled selected hidden>연령대</option>
+                                    <option value="20">20대</option>
+                                    <option value="30">30대</option>
+                                    <option value="40">40대</option>
+                                    <option value="50">50대</option>
+                                    <option value="60">60대</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 거주지 선택 -->
+                <div class="column is-one-fifth">
+                    <div class="field">                    
+                        <div class="control">
+                            <div class="select is-fullwidth">
+                                <select id="area" name="area">
+                                    <option value="" disabled selected hidden>거주지</option>
+                                    <option value="7">서울특별시</option>
+                                    <option value="0">경기도</option>
+                                    <option value="9">인청광역시</option>
+                                    <option value="4">대구광역시</option>
+                                    <option value="5">대전광역시</option>
+                                    <option value="8">울산광역시</option>
+                                    <option value="3">광주광역시</option>
+                                    <option value="13">충청남도</option>
+                                    <option value="14">충청북도</option>
+                                    <option value="1">경상남도</option>
+                                    <option value="2">경상북도</option>
+                                    <option value="10">전라남도</option>
+                                    <option value="11">전라북도</option>
+                                    <option value="15">강원도</option>
+                                    <option value="12">제주도</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 소득수준 선택 -->
+                <div class="column is-one-fifth">
+                    <div class="field">                    
+                        <div class="control">
+                            <div class="select is-fullwidth">
+                                <select id="income" name="income">
+                                    <option value="" disabled selected hidden>소득수준</option>
+                                    <option value="1">300만원 미만</option>
+                                    <option value="2">300 ~ 500만원</option>
+                                    <option value="3">300 ~ 500만원</option>
+                                    <option value="4">700만원 이상</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 버튼 및 로딩 스피너 -->
+                <div class="column is-one-fifth">
+                    <button type="button" onclick="predict()" id="predictButton" class="button is-primary">추천 여행지 보기</button>
+                </div>
+            </div>
+        </form>
+
+        <div id="map" style="height: 500px; width: 100%;"></div>
+    </container>
+    </section>
+
+    <script>
+        var map; // 전역 변수로 map 선언
+        var bounds = new L.LatLngBounds();
+
+        // Leaflet 지도 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            map = L.map('map').setView([0, 0], 2); // 초기 위치와 줌 레벨 설정
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map); // OpenStreetMap 타일 레이어 추가
+        });
+
+        function predict() {
+            // 버튼 요소 가져오기
+            var predictButton = document.getElementById("predictButton");
+            predictButton.className = "button is-primary is-loading"
+
+            var age = document.getElementById("age").value;
+            var sex = document.getElementById("sex").value;
+            var area = document.getElementById("area").value;
+            var income = document.getElementById("income").value;
+
+            var data = {
+                "age": age,
+                "sex": sex,
+                "area": area,
+                "income": income
+            };
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })         
+            .then(data => {
+                console.log('data: ', data);
+                
+                // 마커 레이어 초기화
+                map.eachLayer(function (layer) {
+                    if (layer instanceof L.Marker) {
+                        map.removeLayer(layer);
+                    }
+                });
+                
+                // 서버에서 받아온 데이터를 이용하여 지도에 마커 추가
+                data.forEach(function (place_info) {
+                    var coord = place_info[0];
+                    var label = place_info[1];
+                    var title = place_info[2];
+                    addMarker(coord, label, title);
+                    bounds.extend(coord);
+                });
+                map.fitBounds(bounds);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            })
+            .finally(() => {
+                predictButton.className = "button is-primary"
+            });
+        }
+        
+        // 마커 추가 함수
+        function addMarker(coord, label, title) {
+
+            L.marker(coord).addTo(map).bindTooltip(title).bindPopup(label, {
+                maxWidth: 500,
+                maxHeight: 400,
+                autoPan: true, 
+                autoPanPadding: L.point(50, 50)  // 팝업과 지도 영역 간의 여백 조절
+            }).on('popupopen', function () {
+                // 팝업이 열릴 때 CSS를 사용하여 최대 높이를 지정
+                console.log('popupopened')
+                this._popup._container.style.overflowY = "auto";
+            });
+        }
+    </script>
+</body>
+</html>
