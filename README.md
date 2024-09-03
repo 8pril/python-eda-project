@@ -179,4 +179,4 @@ Decision Tree Classifier를 생성하여 사용자를 특성에 따라 분류하
 
 ![스크린샷 2024-05-16 오전 11.45.48.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/665aabc8-73cb-4a4a-bcc8-48cc3d6fce43/117a59d7-819b-48d9-8c26-7cf049eb8738/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2024-05-16_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_11.45.48.png)
 
-![스크린샷 2024-05-16 오전 11.54.27.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/665aabc8-73cb-4a4a-bcc8-48cc3d6fce43/1b3ec229-896f-48ea-a1fb-940232c96d5d/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2024-05-16_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_11.54.27.png)
+![스크린샷 2024-05-16 오전 11.54.27.png](https://github.com/user-attachments/assets/892e8111-3b6b-4099-9bc2-878bd084f6d4)
